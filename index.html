@@ -3,8 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Display</title>
-    <h1>Test web hanya HTML</h1>
-</head>
+    <title>Auto Refresh and Login</title>
+    <script>
+        function checkStatus() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', window.location.href, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 503) {
+                        console.log('503 error detected, refreshing the page...');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 5000); // Refresh after 5 seconds
+                    }
+                }
+            };
+            xhr.send();
+        }
 
+        // Check status every 30 seconds
+        setInterval(checkStatus, 30000);
+
+        checkStatus(); // Initial check
+
+        // Function to store login data in localStorage
+        function storeLoginData(username, token) {
+            localStorage.setItem('username', username);
+            localStorage.setItem('token', token);
+        }
+
+        // Function to auto-login using localStorage data
+        function autoLogin() {
+            var username = localStorage.getItem('username');
+            var token = localStorage.getItem('token');
+
+            if (username && token) {
+                // Assuming you have a function to handle login
+                login(username, token);
+            }
+        }
+
+        // Function to handle login
+        function login(username, token) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/login', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log('Logged in successfully');
+                    } else {
+                        console.error('Failed to log in');
+                    }
+                }
+            };
+            var data = JSON.stringify({ username: username, token: token });
+            xhr.send(data);
+        }
+
+        // Call autoLogin on page load
+        window.onload = autoLogin;
+    </script>
+</head>
+<body>
+    <h1>Auto Refresh and Login Example</h1>
+    <button onclick="storeLoginData('user123', 'token123')">Store Login Data</button>
+</body>
 </html>
