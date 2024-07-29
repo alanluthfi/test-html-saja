@@ -30,6 +30,7 @@
         function storeLoginData(username, token) {
             localStorage.setItem('username', username);
             localStorage.setItem('token', token);
+            displayLoginData(); // Update display after storing
         }
 
         // Function to auto-login using localStorage data
@@ -41,6 +42,7 @@
                 // Assuming you have a function to handle login
                 login(username, token);
             }
+            displayLoginData(); // Update display on page load
         }
 
         // Function to handle login
@@ -61,6 +63,21 @@
             xhr.send(data);
         }
 
+        // Function to clear localStorage
+        function clearLocalStorage() {
+            localStorage.clear();
+            console.log('Local storage cleared');
+            displayLoginData(); // Update display after clearing
+        }
+
+        // Function to display stored login data
+        function displayLoginData() {
+            var username = localStorage.getItem('username');
+            var token = localStorage.getItem('token');
+            document.getElementById('usernameDisplay').innerText = username ? username : 'No username stored';
+            document.getElementById('tokenDisplay').innerText = token ? token : 'No token stored';
+        }
+
         // Call autoLogin on page load
         window.onload = autoLogin;
     </script>
@@ -68,5 +85,10 @@
 <body>
     <h1>Auto Refresh and Login Example</h1>
     <button onclick="storeLoginData('user123', 'token123')">Store Login Data</button>
+    <button onclick="clearLocalStorage()">Clear Local Storage</button>
+    
+    <h2>Stored Login Data:</h2>
+    <p><strong>Username:</strong> <span id="usernameDisplay">No username stored</span></p>
+    <p><strong>Token:</strong> <span id="tokenDisplay">No token stored</span></p>
 </body>
 </html>
