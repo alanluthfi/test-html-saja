@@ -30,6 +30,7 @@
         function storeLoginData(username, token) {
             localStorage.setItem('username', username);
             localStorage.setItem('token', token);
+            console.log("Inserted", username, token);
             displayLoginData(); // Update display after storing
         }
 
@@ -39,28 +40,30 @@
             var token = localStorage.getItem('token');
 
             if (username && token) {
-                // Assuming you have a function to handle login
-                login(username, token);
+                console.log('Logged in successfully');
+                document.getElementById('loginStatus').innerText = "login Sucess";
+                
+            } else {
+                console.error('Failed to log in');
+                document.getElementById('loginStatus').innerText = "login Failed";
+                
             }
             displayLoginData(); // Update display on page load
         }
 
-        // Function to handle login
+        // Simplified login function
         function login(username, token) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/login', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        console.log('Logged in successfully');
-                    } else {
-                        console.error('Failed to log in');
-                    }
-                }
-            };
-            var data = JSON.stringify({ username: username, token: token });
-            xhr.send(data);
+            var username = localStorage.getItem('username');
+            var token = localStorage.getItem('token');
+            
+            if (username && token) {
+                console.log('Logged in successfully');
+                document.getElementById('loginStatus').innerText = "login Sucess";
+            } else {
+                console.error('Failed to log in');
+                document.getElementById('loginStatus').innerText = "login Failed";
+            }
+            displayLoginData(); // Update display on page load
         }
 
         // Function to clear localStorage
@@ -86,9 +89,11 @@
     <h1>Auto Refresh and Login Example</h1>
     <button onclick="storeLoginData('user123', 'token123')">Store Login Data</button>
     <button onclick="clearLocalStorage()">Clear Local Storage</button>
+    <button onclick="login()">login</button>
     
     <h2>Stored Login Data:</h2>
     <p><strong>Username:</strong> <span id="usernameDisplay">No username stored</span></p>
     <p><strong>Token:</strong> <span id="tokenDisplay">No token stored</span></p>
+    <p><strong>login status:</strong> <span id="loginStatus">No status</span></p>
 </body>
 </html>
